@@ -15,17 +15,23 @@ contract AuctionFactory is IAuctionFactory {
     address[] public startedTutors;   //경매 진행 중
     address[] public stoppedTutors;   //경매 진행 중X
 
+    uint256[] public rates;
+
     struct Tutor {
         TutorAuction auction;       //경매 컨트랙트 
-        uint256 rate;               //평가(100점 만점)
+        uint256 averageRate;        //평가(100점 만점)
         uint256 index;
-        bool inProgress;            //경매 진행중
         bool isRegistered;          //가입 여부
         string education;           //학력
         string career;              //경력
     }
 
     mapping(address => Tutor) public tutors;
+
+    modifier whenCallerIsRegistered {
+        require(tutors[msg.sender].isRegistered, "You are not registerd.");
+        _;
+    }
 
     function registerTutor(
         string memory _education,     //학력
@@ -40,7 +46,6 @@ contract AuctionFactory is IAuctionFactory {
             new TutorAuction(),
             0,
             index,
-            false,
             true,
             _education,
             _career
@@ -52,11 +57,11 @@ contract AuctionFactory is IAuctionFactory {
     }
 
     function startAuction(
-        uint _endPrice,
-        uint _endTime
-    )external {
-        require(tutors[msg.sender].isRegistered, "You are not registerd.");
-        require(tutors[msg.sender].inProgress == false, "You are already in progress.");
+        uint _endPrice,     //경매 종료 가격
+        uint _endTime       //경매 지속 시간
+    )external whenCallerIsRegistered {
+        require(tutors[msg.sender].auction.inProgress() == false, "You are already in progress.");
+        require(tutors[msg.sender].auction.totalBid() == 0, "Auction did not reset yet.");
         require(_endPrice >= 0.01 ether && _endPrice <= 1 ether, "Enter between 0.01 ether and 1 ether.");
         require(_endTime >= 1 weeks && _endTime <= 12 weeks, "Enter between 1 week and 12 weeks.");
 
@@ -67,16 +72,32 @@ contract AuctionFactory is IAuctionFactory {
     }
 
     //아무도 입찰하지 않았을 때 중단 가능
-    function abortAuction(
-
-    )external {
-        require(tutors[msg.sender].isRegistered, "You are not registerd.");
-        require(tutors[msg.sender].inProgress == true, "You did not start.");
-        uint256 totalBidding = tutors[msg.sender].auction.totalBidding();
+    function abortAuction() external whenCallerIsRegistered {
+        require(tutors[msg.sender].auction.inProgress() == true, "You did not start.");
+        uint256 totalBidding = tutors[msg.sender].auction.totalBid();
         require(totalBidding == 0, "There is bidding.");
 
-        tutors[msg.sender].auction.stopAuction();
+        tutors[msg.sender].auction.endAuction();
+
+        //TODO 배열 조작 필요
 
         emit AuctionAborted(msg.sender);
+    }
+
+    function claimReward() external whenCallerIsRegistered {
+        require(tutors[msg.sender].auction.inProgress() == false, "Auction is in progress.");
+        require(tutors[msg.sender].auction.totalBid() != 0, "Auction already reset.");
+
+        //평가 기록
+        rates.push(tutors[msg.sender].auction.rate());
+        //평균 평가 계산
+        uint sum = 0;
+        uint len = rates.length;
+        for (uint i = 0; i < len; i++) {
+            sum = sum.add(rates[i]);
+        }
+        tutors[msg.sender].averageRate = sum.div(len);
+        //보상 지급 및 최종 리셋
+        tutors[msg.sender].auction.claimReward(msg.sender);
     }
 }

@@ -9,4 +9,6 @@ interface IAuctionFactory {
         
     function registerTutor(string memory _education, string memory _career, uint256 pay) external;
     function startAuction(uint _endPrice, uint _endTime) external;
+    function abortAuction() external;
+    function claimReward() external whenCallerIsRegistered
 }
