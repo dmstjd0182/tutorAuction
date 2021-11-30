@@ -7,10 +7,7 @@ import './TutorAuction.sol';
 
 contract AuctionFactory is IAuctionFactory {
     using SafeMath for uint256;
-    //경매 컨트랙트 주소
-    address private AUCTION_IMPLEMENT_ADDRESS;
-
-    
+ 
     address[] public allTutors;       //모든 선생님
     address[] public startedTutors;   //경매 진행 중
     address[] public stoppedTutors;   //경매 진행 중X
