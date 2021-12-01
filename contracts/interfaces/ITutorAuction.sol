@@ -7,7 +7,6 @@ interface ITutorAuction {
     event Bid(address bidder, uint256 highestBid);
     event AuctionEnded(address highestBidder, uint256 highestBid, uint256 rewardPendingUntil);
 
-    error WithdrawFailed(address who);
     error AuctionTimeOver();
 
     function startAuction(uint _endPrice, uint _endTime) external;
