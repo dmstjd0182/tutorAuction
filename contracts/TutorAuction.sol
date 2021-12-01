@@ -113,9 +113,9 @@ contract TutorAuction is ITutorAuction, Ownable{
         pendingBid[overbid] = 0;
         totalBid = totalBid.sub(amount);
 
-        payable(msg.sender).transfer(amount);
-
-        emit Withdraw(overbid, amount);
+        if(payable(msg.sender).send(amount)){       //보안 문제로 send 사용
+            emit Withdraw(overbid, amount);
+        }   //악의적인 공격 시 입찰 없앰
     }
 
     function _endAuction() private {
