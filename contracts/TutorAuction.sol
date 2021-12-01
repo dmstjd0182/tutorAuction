@@ -97,14 +97,14 @@ contract TutorAuction is ITutorAuction, Ownable{
     function claimReward(address tutor) external onlyOwner {
         require(block.timestamp > rewardPendingUntil, "Reward is pending yet.");
 
-        //이 컨트랙트 잔고 모두 지급
-        payable(tutor).transfer(address(this).balance);
-        
         //경매 최종 리셋
         rate = 100;
         rewardPendingUntil = 0;
         highestBid = 0;
         totalBid = 0;
+
+        //이 컨트랙트 잔고 모두 지급
+        payable(tutor).transfer(address(this).balance);
     }
 
     function _withdraw(address overbid) private {
