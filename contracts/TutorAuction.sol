@@ -87,10 +87,10 @@ contract TutorAuction is ITutorAuction, Ownable{
 
         uint256 biddershare = address(this).balance.mul(100 - rate).div(100);
 
-        payable(highestBidder).transfer(biddershare);
-
         //다시 평가 못하게 낙찰자 리셋
         highestBidder = address(0);
+
+        payable(highestBidder).transfer(biddershare);
     }
 
     //최종 보상 청구
@@ -101,7 +101,7 @@ contract TutorAuction is ITutorAuction, Ownable{
         payable(tutor).transfer(address(this).balance);
         
         //경매 최종 리셋
-        rate = 0;
+        rate = 100;
         rewardPendingUntil = 0;
         highestBid = 0;
         totalBid = 0;
@@ -115,7 +115,9 @@ contract TutorAuction is ITutorAuction, Ownable{
 
         if(payable(msg.sender).send(amount)){       //보안 문제로 send 사용
             emit Withdraw(overbid, amount);
-        }   //악의적인 공격 시 입찰 없앰
+        }else {
+            totalBid = totalBid.add(amount);
+        } //악의적인 공격 시 공격자 입찰만 없애고 tutor의 몫은 남김
     }
 
     function _endAuction() private {
@@ -124,8 +126,10 @@ contract TutorAuction is ITutorAuction, Ownable{
         endTime = 0;
         inProgress = false;
 
-        //경매 종료 시점부터 일주일 후부터 보상 청구 가능
+        if(totalBid != 0) {
+        //(Abort 아니라면) 경매 종료 시점 일주일 후부터 보상 청구 가능
         rewardPendingUntil = block.timestamp + 1 weeks;
+        }
         emit AuctionEnded(highestBidder, highestBid, rewardPendingUntil);
     }
 }
