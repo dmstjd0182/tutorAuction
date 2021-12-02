@@ -17,6 +17,7 @@ contract AuctionFactory is IAuctionFactory {
     struct Tutor {
         TutorAuction auction;       //경매 컨트랙트 
         uint256 averageRate;        //평가(100점 만점)
+        uint256 pay;                //시급 * 10
         uint256 index;
         bool isRegistered;          //가입 여부
         string education;           //학력
@@ -33,7 +34,7 @@ contract AuctionFactory is IAuctionFactory {
     function registerTutor(
         string memory _education,     //학력
         string memory _career,        //경력
-        uint256 pay                   //시급 * 10 (소수점 처리)
+        uint256 _pay                  //시급 * 10 (소수점 처리)
     ) external {
         require(tutors[msg.sender].isRegistered == false , "You already did.");
         require(pay != 0, "Please submit your pay.");
@@ -42,6 +43,7 @@ contract AuctionFactory is IAuctionFactory {
         tutors[msg.sender] = Tutor(
             new TutorAuction(),
             0,
+            _pay,
             index,
             true,
             _education,
@@ -51,6 +53,22 @@ contract AuctionFactory is IAuctionFactory {
         stoppedTutors.push(msg.sender);
 
         emit TutorRegistered(msg.sender);
+    }
+
+    //프로필 정보 수정
+    function editProfile(
+        string memory _education,     //학력
+        string memory _career,        //경력
+        uint256 _pay                   //시급 * 10 (소수점 처리)
+    ) external {
+        require(tutors[msg.sender].isRegistered, "You did not register.");
+        require(pay != 0, "Please submit your pay.");
+
+        tutors[msg.sender].education = _education;
+        tutors[msg.sender].career = _career;
+        tutors[msg.sender].pay = _pay;
+
+        emit ProfileEdited(msg.sender);
     }
 
     function startAuction(
@@ -81,6 +99,7 @@ contract AuctionFactory is IAuctionFactory {
         emit AuctionAborted(msg.sender);
     }
 
+    //경매 종료 및 평가 종료 후 평가 반영, 보상 출금
     function claimReward() external whenCallerIsRegistered {
         require(tutors[msg.sender].auction.inProgress() == false, "Auction is in progress.");
         require(tutors[msg.sender].auction.totalBid() != 0, "Auction already reset.");
