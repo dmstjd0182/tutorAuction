@@ -82,8 +82,9 @@ contract AuctionFactory is IAuctionFactory {
 
         auction.startAuction(_endPrice, _endTime);
 
-        //TODO 배열 조작 필요
-        
+        //TODO 최적화 고민
+        startedTutors[tutors[msg.sender].index] = msg.sender;
+        delete stoppedTutors[tutors[msg.sender].index];
 
         emit AuctionStarted(msg.sender, _endPrice, _endTime);
     }
@@ -97,7 +98,9 @@ contract AuctionFactory is IAuctionFactory {
 
         auction.endAuction();
 
-        //TODO 배열 조작 필요
+        //TODO 최적화 고민
+        stoppedTutors[tutors[msg.sender].index] = msg.sender;
+        delete startedTutors[tutors[msg.sender].index];
 
         emit AuctionAborted(msg.sender);
     }
