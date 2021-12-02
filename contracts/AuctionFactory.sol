@@ -60,8 +60,7 @@ contract AuctionFactory is IAuctionFactory {
         string memory _education,     //학력
         string memory _career,        //경력
         uint256 _pay                   //시급 * 10 (소수점 처리)
-    ) external {
-        require(tutors[msg.sender].isRegistered, "You did not register.");
+    ) external whenCallerIsRegistered {
         require(pay != 0, "Please submit your pay.");
 
         tutors[msg.sender].education = _education;
@@ -75,24 +74,28 @@ contract AuctionFactory is IAuctionFactory {
         uint _endPrice,     //경매 종료 가격
         uint _endTime       //경매 지속 시간
     )external whenCallerIsRegistered {
-        require(tutors[msg.sender].auction.inProgress() == false, "You are already in progress.");
-        require(tutors[msg.sender].auction.totalBid() == 0, "Auction did not reset yet.");
+        TutorAuction auction = tutors[msg.sender].acution;
+        require(auction.inProgress() == false, "You are already in progress.");
+        require(auction.totalBid() == 0, "Auction did not reset yet.");
         require(_endPrice >= 0.01 ether && _endPrice <= 1 ether, "Enter between 0.01 ether and 1 ether.");
         require(_endTime >= 1 weeks && _endTime <= 12 weeks, "Enter between 1 week and 12 weeks.");
 
-        tutors[msg.sender].auction.startAuction(_endPrice, _endTime);
+        auction.startAuction(_endPrice, _endTime);
 
         //TODO 배열 조작 필요
+        
+
         emit AuctionStarted(msg.sender, _endPrice, _endTime);
     }
 
     //아무도 입찰하지 않았을 때 중단 가능
     function abortAuction() external whenCallerIsRegistered {
-        require(tutors[msg.sender].auction.inProgress() == true, "You did not start.");
-        uint256 totalBidding = tutors[msg.sender].auction.totalBid();
+         TutorAuction auction = tutors[msg.sender].acution;
+        require(auction.inProgress() == true, "You did not start.");
+        uint256 totalBidding = auction.totalBid();
         require(totalBidding == 0, "There is bidding.");
 
-        tutors[msg.sender].auction.endAuction();
+        auction.endAuction();
 
         //TODO 배열 조작 필요
 
@@ -101,10 +104,9 @@ contract AuctionFactory is IAuctionFactory {
 
     //경매 종료 및 평가 종료 후 평가 반영, 보상 출금
     function claimReward() external whenCallerIsRegistered {
-        require(tutors[msg.sender].auction.inProgress() == false, "Auction is in progress.");
-        require(tutors[msg.sender].auction.totalBid() != 0, "Auction already reset.");
-
         TutorAuction auction = tutors[msg.sender].auction;
+        require(auction.inProgress() == false, "Auction is in progress.");
+        require(auction.totalBid() != 0, "Auction already reset.");
 
         //평가 기록
         rates.push(auction.rate());
