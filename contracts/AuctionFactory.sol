@@ -104,8 +104,10 @@ contract AuctionFactory is IAuctionFactory {
         require(tutors[msg.sender].auction.inProgress() == false, "Auction is in progress.");
         require(tutors[msg.sender].auction.totalBid() != 0, "Auction already reset.");
 
+        TutorAuction auction = tutors[msg.sender].auction;
+
         //평가 기록
-        rates.push(tutors[msg.sender].auction.rate());
+        rates.push(auction.rate());
         //평균 평가 계산
         uint sum = 0;
         uint len = rates.length;
@@ -114,6 +116,8 @@ contract AuctionFactory is IAuctionFactory {
         }
         tutors[msg.sender].averageRate = sum.div(len);
         //보상 지급 및 최종 리셋
-        tutors[msg.sender].auction.claimReward(msg.sender);
+        auction.claimReward(msg.sender);
+
+        emit RewardClaimed(msg.sender, tutor[msg.sender].averageRate, address(auction).balance);
     }
 }

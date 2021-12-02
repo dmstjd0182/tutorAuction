@@ -6,6 +6,7 @@ interface ITutorAuction {
     event Withdraw(address who, uint256 amount);
     event Bid(address bidder, uint256 highestBid);
     event AuctionEnded(address highestBidder, uint256 highestBid, uint256 rewardPendingUntil);
+    event RateSet(address rater, uint256 rate, uint256 raterShare);
 
     error AuctionTimeOver();
 

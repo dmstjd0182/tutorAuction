@@ -91,6 +91,8 @@ contract TutorAuction is ITutorAuction, Ownable{
         highestBidder = address(0);
 
         payable(highestBidder).transfer(biddershare);
+
+        emit RateSet(highestBidder, rate, biddershare);
     }
 
     //최종 보상 청구
