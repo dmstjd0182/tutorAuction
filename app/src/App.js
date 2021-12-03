@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import '@elastic/eui/dist/eui_theme_light.css';
+import { EuiProvider } from '@elastic/eui';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import Web3ReactComponent from './components/web3_react/Web3ReactComponent';
+import FactoryMainPage from './pages/factory/FactoryMainPage';
+import RegisterPage from './pages/factory/RegisterPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <EuiProvider colorMode='light'>
+      <Web3ReactComponent>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<FactoryMainPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          {/* <Route path="/swap" element={<SwapPoolMainPage />} /> */}
+        </Routes>
+      </BrowserRouter>
+      </Web3ReactComponent>
+      </EuiProvider>
     </div>
   );
 }
