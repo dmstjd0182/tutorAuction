@@ -1,6 +1,6 @@
 import React from 'react';
 import '@elastic/eui/dist/eui_theme_light.css';
-import { EuiProvider } from '@elastic/eui';
+import { EuiProvider, EuiHorizontalRule } from '@elastic/eui';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Web3ReactComponent from './components/web3_react/Web3ReactComponent';
 import FactoryMainPage from './pages/factory/FactoryMainPage';
@@ -12,6 +12,7 @@ function App() {
     <div>
       <EuiProvider colorMode='light'>
       <Web3ReactComponent>
+      <EuiHorizontalRule size="full" />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FactoryMainPage />} />

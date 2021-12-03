@@ -1,4 +1,4 @@
-import { EuiCard, EuiText, EuiButton, EuiFlexItem, EuiFlexGroup } from "@elastic/eui/";
+import { EuiCard, EuiText, EuiHorizontalRule, EuiFlexItem, EuiFlexGroup } from "@elastic/eui/";
 import React from "react";
 
 function MappingCardsComponent(props){
@@ -29,6 +29,7 @@ function MappingCardsComponent(props){
 
     return (
         <>
+        <EuiHorizontalRule size="full" />
         <EuiFlexGroup gutterSize="l">
             {result}
         </EuiFlexGroup>
