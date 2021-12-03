@@ -25,6 +25,7 @@ contract AuctionFactory is IAuctionFactory {
         bool isRegistered;          //가입 여부
         string education;           //학력
         string career;              //경력
+        string description;         //소개
     }
 
     mapping(address => Tutor) public tutors;
@@ -65,6 +66,7 @@ contract AuctionFactory is IAuctionFactory {
     function registerTutor(
         string memory _education,     //학력
         string memory _career,        //경력
+        string memory _description,   //소개
         uint256 _pay                  //시급 * 10 (소수점 처리)
     ) external {
         require(tutors[msg.sender].isRegistered == false , "You already did.");
@@ -79,27 +81,30 @@ contract AuctionFactory is IAuctionFactory {
             index,
             true,
             _education,
-            _career
+            _career,
+            _description
         );
         allTutors.push(msg.sender);
         stoppedTutors.push(msg.sender);
 
-        emit TutorRegistered(msg.sender);
+        emit TutorRegistered(msg.sender, _education, _career, _description, _pay);
     }
 
     //프로필 정보 수정
     function editProfile(
-        string memory _education,     //학력
-        string memory _career,        //경력
+        string memory _education,      //학력
+        string memory _career,         //경력
+        string memory _description,    //소개
         uint256 _pay                   //시급 * 10 (소수점 처리)
     ) external whenCallerIsRegistered {
         require(_pay != 0, "Please submit your pay.");
 
         tutors[msg.sender].education = _education;
         tutors[msg.sender].career = _career;
+        tutors[msg.sender].description = _description;
         tutors[msg.sender].pay = _pay;
 
-        emit ProfileEdited(msg.sender);
+        emit ProfileEdited(msg.sender, _education, _career, _description, _pay);
     }
 
     function startAuction(
