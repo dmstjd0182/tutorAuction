@@ -37,7 +37,7 @@ contract AuctionFactory is IAuctionFactory {
         uint256 _pay                  //시급 * 10 (소수점 처리)
     ) external {
         require(tutors[msg.sender].isRegistered == false , "You already did.");
-        require(pay != 0, "Please submit your pay.");
+        require(_pay != 0, "Please submit your pay.");
         //Tutor 등록(+경매 컨트랙트 생성)
         uint256 index = allTutors.length;
         tutors[msg.sender] = Tutor(
@@ -61,7 +61,7 @@ contract AuctionFactory is IAuctionFactory {
         string memory _career,        //경력
         uint256 _pay                   //시급 * 10 (소수점 처리)
     ) external whenCallerIsRegistered {
-        require(pay != 0, "Please submit your pay.");
+        require(_pay != 0, "Please submit your pay.");
 
         tutors[msg.sender].education = _education;
         tutors[msg.sender].career = _career;
@@ -74,7 +74,7 @@ contract AuctionFactory is IAuctionFactory {
         uint _endPrice,     //경매 종료 가격
         uint _endTime       //경매 지속 시간
     )external whenCallerIsRegistered {
-        TutorAuction auction = tutors[msg.sender].acution;
+        TutorAuction auction = tutors[msg.sender].auction;
         require(auction.inProgress() == false, "You are already in progress.");
         require(auction.totalBid() == 0, "Auction did not reset yet.");
         require(_endPrice >= 0.01 ether && _endPrice <= 1 ether, "Enter between 0.01 ether and 1 ether.");
@@ -91,7 +91,7 @@ contract AuctionFactory is IAuctionFactory {
 
     //아무도 입찰하지 않았을 때 중단 가능
     function abortAuction() external whenCallerIsRegistered {
-         TutorAuction auction = tutors[msg.sender].acution;
+         TutorAuction auction = tutors[msg.sender].auction;
         require(auction.inProgress() == true, "You did not start.");
         uint256 totalBidding = auction.totalBid();
         require(totalBidding == 0, "There is bidding.");
@@ -123,6 +123,6 @@ contract AuctionFactory is IAuctionFactory {
         //보상 지급 및 최종 리셋
         auction.claimReward(msg.sender);
 
-        emit RewardClaimed(msg.sender, tutor[msg.sender].averageRate, address(auction).balance);
+        emit RewardClaimed(msg.sender, tutors[msg.sender].averageRate, address(auction).balance);
     }
 }

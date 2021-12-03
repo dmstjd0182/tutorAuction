@@ -13,5 +13,5 @@ interface IAuctionFactory {
     function editProfile(string memory _education, string memory _career, uint256 _pay) external;
     function startAuction(uint _endPrice, uint _endTime) external;
     function abortAuction() external;
-    function claimReward() external whenCallerIsRegistered
+    function claimReward() external;
 }
