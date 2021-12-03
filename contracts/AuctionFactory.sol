@@ -31,6 +31,38 @@ contract AuctionFactory is IAuctionFactory {
         _;
     }
 
+    function getAllTutorArray() external view returns (Tutor[] memory) {
+        Tutor[] memory resultArray;
+        for (uint256 i = 0; i < allTutors.length; i++) {
+            resultArray[i] = tutors[allTutors[i]];
+        }
+        return resultArray;
+    }
+
+    function getStartedTutorArray() external view returns (Tutor[] memory) {
+        Tutor[] memory resultArray;
+        uint256 cnt = 0;
+        for (uint256 i = 0; i < startedTutors.length; i++) {
+            if(startedTutors[i] != address(0)){
+                resultArray[cnt] = tutors[startedTutors[i]];
+                cnt++;
+            }
+        }
+        return resultArray;
+    }
+
+    function getStoppedTutorArray() external view returns (Tutor[] memory) {
+        Tutor[] memory resultArray;
+        uint256 cnt = 0;
+        for (uint256 i = 0; i < stoppedTutors.length; i++) {
+            if(stoppedTutors[i] != address(0)){
+                resultArray[cnt] = tutors[stoppedTutors[i]];
+                cnt++;
+            }
+        }
+        return resultArray;
+    }
+
     function registerTutor(
         string memory _education,     //학력
         string memory _career,        //경력
