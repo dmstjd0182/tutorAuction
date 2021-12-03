@@ -16,6 +16,7 @@ contract AuctionFactory is IAuctionFactory {
 
     struct Tutor {
         TutorAuction auction;       //경매 컨트랙트 
+        address tutor;
         uint256 averageRate;        //평가(100점 만점)
         uint256 pay;                //시급 * 10
         uint256 index;
@@ -74,6 +75,7 @@ contract AuctionFactory is IAuctionFactory {
         uint256 index = allTutors.length;
         tutors[msg.sender] = Tutor(
             new TutorAuction(),
+            msg.sender,
             0,
             _pay,
             index,
