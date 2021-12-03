@@ -14,6 +14,8 @@ contract AuctionFactory is IAuctionFactory {
 
     uint256[] public rates;
 
+    Tutor[] public resultArray;
+
     struct Tutor {
         TutorAuction auction;       //경매 컨트랙트 
         address tutor;
@@ -32,33 +34,29 @@ contract AuctionFactory is IAuctionFactory {
         _;
     }
 
-    function getAllTutorArray() external view returns (Tutor[] memory) {
-        Tutor[] memory resultArray;
+    function getAllTutorArray() external returns (Tutor[] memory) {
+        delete resultArray;
         for (uint256 i = 0; i < allTutors.length; i++) {
-            resultArray[i] = tutors[allTutors[i]];
+            resultArray.push(tutors[allTutors[i]]);
         }
         return resultArray;
     }
 
-    function getStartedTutorArray() external view returns (Tutor[] memory) {
-        Tutor[] memory resultArray;
-        uint256 cnt = 0;
+    function getStartedTutorArray() external returns (Tutor[] memory) {
+        delete resultArray;
         for (uint256 i = 0; i < startedTutors.length; i++) {
             if(startedTutors[i] != address(0)){
-                resultArray[cnt] = tutors[startedTutors[i]];
-                cnt++;
+                resultArray.push(tutors[startedTutors[i]]);
             }
         }
         return resultArray;
     }
 
-    function getStoppedTutorArray() external view returns (Tutor[] memory) {
-        Tutor[] memory resultArray;
-        uint256 cnt = 0;
+    function getStoppedTutorArray() external returns (Tutor[] memory) {
+        delete resultArray;
         for (uint256 i = 0; i < stoppedTutors.length; i++) {
             if(stoppedTutors[i] != address(0)){
-                resultArray[cnt] = tutors[stoppedTutors[i]];
-                cnt++;
+                resultArray.push(tutors[stoppedTutors[i]]);
             }
         }
         return resultArray;
