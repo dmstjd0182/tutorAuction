@@ -14,4 +14,5 @@ interface IAuctionFactory {
     function startAuction(uint _endPrice, uint _endTime) external;
     function abortAuction() external;
     function claimReward() external;
+    function _endAuction(address _tutor) external;
 }

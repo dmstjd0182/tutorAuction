@@ -15,4 +15,5 @@ interface ITutorAuction {
     function bid() external payable;
     function setRate(uint256 _rate) external;
     function claimReward(address tutor) external;
+    function _calAverageRate() external returns (uint256);
 }

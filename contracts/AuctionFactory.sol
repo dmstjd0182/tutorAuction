@@ -9,10 +9,6 @@ contract AuctionFactory is IAuctionFactory {
     using SafeMath for uint256;
  
     address[] public allTutors;       //모든 선생님
-    address[] public startedTutors;   //경매 진행 중
-    address[] public stoppedTutors;   //경매 진행 중X
-
-    uint256[] public rates;
 
     Tutor[] public resultArray;
 
@@ -46,9 +42,9 @@ contract AuctionFactory is IAuctionFactory {
 
     function getStartedTutorArray() external returns (Tutor[] memory) {
         delete resultArray;
-        for (uint256 i = 0; i < startedTutors.length; i++) {
-            if(startedTutors[i] != address(0)){
-                resultArray.push(tutors[startedTutors[i]]);
+        for (uint256 i = 0; i < allTutors.length; i++) {
+            if(tutors[allTutors[i]].inProgress){
+                resultArray.push(tutors[allTutors[i]]);
             }
         }
         return resultArray;
@@ -56,9 +52,9 @@ contract AuctionFactory is IAuctionFactory {
 
     function getStoppedTutorArray() external returns (Tutor[] memory) {
         delete resultArray;
-        for (uint256 i = 0; i < stoppedTutors.length; i++) {
-            if(stoppedTutors[i] != address(0)){
-                resultArray.push(tutors[stoppedTutors[i]]);
+        for (uint256 i = 0; i < allTutors.length; i++) {
+            if(!tutors[allTutors[i]].inProgress){
+                resultArray.push(tutors[allTutors[i]]);
             }
         }
         return resultArray;
@@ -75,7 +71,7 @@ contract AuctionFactory is IAuctionFactory {
         //Tutor 등록(+경매 컨트랙트 생성)
         uint256 index = allTutors.length;
         tutors[msg.sender] = Tutor(
-            new TutorAuction(),
+            new TutorAuction(msg.sender),
             msg.sender,
             0,
             _pay,
@@ -87,7 +83,6 @@ contract AuctionFactory is IAuctionFactory {
             false
         );
         allTutors.push(msg.sender);
-        stoppedTutors.push(msg.sender);
 
         emit TutorRegistered(msg.sender, _education, _career, _description, _pay);
     }
@@ -110,21 +105,16 @@ contract AuctionFactory is IAuctionFactory {
     }
 
     function startAuction(
-        uint _endPrice,     //경매 종료 가격
-        uint _endTime       //경매 지속 시간
+        uint256 _endPrice,     //경매 종료 가격
+        uint256 _endTime       //경매 지속 시간
     )external whenCallerIsRegistered {
-        TutorAuction auction = tutors[msg.sender].auction;
         require(tutors[msg.sender].inProgress == false, "You are already in progress.");
-        require(auction.totalBid() == 0, "Auction did not reset yet.");
+        require(tutors[msg.sender].auction.totalBid() == 0, "Auction did not reset yet.");
         require(_endPrice >= 0.01 ether && _endPrice <= 1 ether, "Enter between 0.01 ether and 1 ether.");
         require(_endTime >= 1 weeks && _endTime <= 12 weeks, "Enter between 1 week and 12 weeks.");
 
         tutors[msg.sender].inProgress = true;
-        auction.startAuction(_endPrice, _endTime);
-
-        //TODO 최적화 고민
-        startedTutors[tutors[msg.sender].index] = msg.sender;
-        delete stoppedTutors[tutors[msg.sender].index];
+        tutors[msg.sender].auction.startAuction(_endPrice, _endTime);
 
         emit AuctionStarted(msg.sender, _endPrice, _endTime);
     }
@@ -133,15 +123,10 @@ contract AuctionFactory is IAuctionFactory {
     function abortAuction() external whenCallerIsRegistered {
         TutorAuction auction = tutors[msg.sender].auction;
         require(tutors[msg.sender].inProgress == true, "You did not start.");
-        uint256 totalBidding = auction.totalBid();
-        require(totalBidding == 0, "There is bidding.");
+        require(auction.totalBid() == 0, "There is bidding.");
 
         tutors[msg.sender].inProgress = false;
         auction.endAuction();
-
-        //TODO 최적화 고민
-        stoppedTutors[tutors[msg.sender].index] = msg.sender;
-        delete startedTutors[tutors[msg.sender].index];
 
         emit AuctionAborted(msg.sender);
     }
@@ -152,18 +137,17 @@ contract AuctionFactory is IAuctionFactory {
         require(auction.inProgress() == false, "Auction is in progress.");
         require(auction.totalBid() != 0, "Auction already reset.");
 
-        //평가 기록
-        rates.push(auction.rate());
         //평균 평가 계산
-        uint sum = 0;
-        uint len = rates.length;
-        for (uint i = 0; i < len; i++) {
-            sum = sum.add(rates[i]);
-        }
-        tutors[msg.sender].averageRate = sum.div(len);
+        tutors[msg.sender].averageRate = auction._calAverageRate();
         //보상 지급 및 최종 리셋
         auction.claimReward(msg.sender);
 
         emit RewardClaimed(msg.sender, tutors[msg.sender].averageRate, address(auction).balance);
+    }
+
+    function _endAuction(address _tutor) external {
+        require(msg.sender == address(tutors[_tutor].auction), "Only auction contract can call this.");
+
+        tutors[_tutor].inProgress = false;
     }
 }
