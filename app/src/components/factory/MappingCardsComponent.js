@@ -20,7 +20,7 @@ function MappingCardsComponent(props){
                     image={
                         <div>
                         <img
-                            src={imgLinks[auctionAddress % imgLinks.length]}
+                            src={imgLinks[+auctionAddress % imgLinks.length]}
                             height='300'
                             width='100'
                         />
