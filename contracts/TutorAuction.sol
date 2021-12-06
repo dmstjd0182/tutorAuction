@@ -143,7 +143,7 @@ contract TutorAuction is ITutorAuction, Ownable{
         emit AuctionEnded(highestBidder, highestBid, rewardPendingUntil);
     }
 
-    function _calAverageRate() external returns (uint256) {
+    function _calAverageRate() external onlyOwner returns (uint256) {
 
         //평가 기록
         rates.push(rate);
