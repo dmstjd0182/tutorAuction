@@ -1,7 +1,7 @@
 import React from "react";
 import MappingCardsComponent from "./MappingCardsComponent";
 
-function AllTutorComponent(props) {
+function RendringCardsComponent(props) {
     const data = props.data;
 
     return (
@@ -13,4 +13,4 @@ function AllTutorComponent(props) {
     );
 }
 
-export default AllTutorComponent;
+export default RendringCardsComponent;

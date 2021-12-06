@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { FactoryContext } from "../contexts/ContextComponents";
-import RenderingCardsComponent from "./AllTutorComponent";
+import RenderingCardsComponent from "./RendringCardsComponent";
 
 function SelectTutorArrayComponent(props) {
     let option = props.option;

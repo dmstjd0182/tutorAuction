@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import RenderingCardsComponent from "../../components/factory/RenderingCardsComponent";
 import ToggleComponent from "../../components/factory/ToggleComponent";
 import RegisterComponent from "../../components/factory/RegisterComponent";
 import { EuiHorizontalRule } from "@elastic/eui/";
+import SelectTutorArrayComponent from "../../components/factory/SelectTutorArrayComponent";
 
 function FactoryMainPage(props) {
     const [toggleIdSelected, setToggleIdSelected] = useState('all');
@@ -15,7 +15,7 @@ function FactoryMainPage(props) {
             toggleIdSelected={toggleIdSelected}
             setToggleIdSelected={setToggleIdSelected}
         />
-        <RenderingCardsComponent 
+        <SelectTutorArrayComponent 
             option={toggleIdSelected}
         />
         </>
