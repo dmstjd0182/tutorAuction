@@ -7,7 +7,7 @@ function MappingCardsComponent(props){
 
     const result = array.map((tutor) => {
         return(
-            <EuiFlexItem>
+            <EuiFlexItem key={tutor.tutor}>
                 <ProfileCardComponent
                     isAuctionPage={false}
                     tutor={tutor}
