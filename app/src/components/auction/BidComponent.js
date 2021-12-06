@@ -32,7 +32,7 @@ function BidComponent(props) {
             placeholder="필수 입력"
             value={bid}
             onChange={bidChange}
-            min={+highestBid}
+            min={+web3.utils.fromWei(highestBid.toString(), 'ether')}
             step={0.001}
         />
         <EuiButton
