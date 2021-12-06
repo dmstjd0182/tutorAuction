@@ -28,7 +28,7 @@ function ProfileCardComponent(props) {
             titleSize='s'
             title={tutor}
             description={description}
-            href={props.isAuctionPage ? null :`auction/${tutor}`}
+            href={props.isAuctionPage ? false :`auction/${tutor}`}
             isDisabled={inProgress ? false : true}
             paddingSize='l'
         >

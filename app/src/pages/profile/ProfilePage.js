@@ -61,7 +61,6 @@ function ProfilePage(props) {
 
     return(
         <>
-        <br />
         <EuiButton href="/">메인 페이지로 이동</EuiButton>
         {isRegistered &&
         <EuiButton href={`/auction/${account}`}>프로필로 돌아가기</EuiButton>
