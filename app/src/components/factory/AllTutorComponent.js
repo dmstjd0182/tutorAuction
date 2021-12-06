@@ -1,27 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { FactoryContext } from "../contexts/ContextComponents";
+import React from "react";
 import MappingCardsComponent from "./MappingCardsComponent";
 
 function AllTutorComponent(props) {
-    const [data, setData] = useState([]);
-    const factory = useContext(FactoryContext);
-
-    async function getData() {
-        setData(await factory.methods.getAllTutorArray().call());
-    }
-
-    useEffect(() => {
-        getData();
-    });
+    const data = props.data;
 
     return (
         <>
-        {data.length != 0
-        ?<MappingCardsComponent 
+        <MappingCardsComponent 
             array={data}
         />
-        :<><br />There is no tutor.</>
-        }
         </>
     );
 }

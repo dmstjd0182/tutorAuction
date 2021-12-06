@@ -26,6 +26,7 @@ contract AuctionFactory is IAuctionFactory {
         string education;           //학력
         string career;              //경력
         string description;         //소개
+        bool inProgress;            //경매 진행 여부
     }
 
     mapping(address => Tutor) public tutors;
@@ -82,7 +83,8 @@ contract AuctionFactory is IAuctionFactory {
             true,
             _education,
             _career,
-            _description
+            _description,
+            false
         );
         allTutors.push(msg.sender);
         stoppedTutors.push(msg.sender);
@@ -112,11 +114,12 @@ contract AuctionFactory is IAuctionFactory {
         uint _endTime       //경매 지속 시간
     )external whenCallerIsRegistered {
         TutorAuction auction = tutors[msg.sender].auction;
-        require(auction.inProgress() == false, "You are already in progress.");
+        require(tutors[msg.sender].inProgress == false, "You are already in progress.");
         require(auction.totalBid() == 0, "Auction did not reset yet.");
         require(_endPrice >= 0.01 ether && _endPrice <= 1 ether, "Enter between 0.01 ether and 1 ether.");
         require(_endTime >= 1 weeks && _endTime <= 12 weeks, "Enter between 1 week and 12 weeks.");
 
+        tutors[msg.sender].inProgress = true;
         auction.startAuction(_endPrice, _endTime);
 
         //TODO 최적화 고민
@@ -128,11 +131,12 @@ contract AuctionFactory is IAuctionFactory {
 
     //아무도 입찰하지 않았을 때 중단 가능
     function abortAuction() external whenCallerIsRegistered {
-         TutorAuction auction = tutors[msg.sender].auction;
-        require(auction.inProgress() == true, "You did not start.");
+        TutorAuction auction = tutors[msg.sender].auction;
+        require(tutors[msg.sender].inProgress == true, "You did not start.");
         uint256 totalBidding = auction.totalBid();
         require(totalBidding == 0, "There is bidding.");
 
+        tutors[msg.sender].inProgress = false;
         auction.endAuction();
 
         //TODO 최적화 고민
