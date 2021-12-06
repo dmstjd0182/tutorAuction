@@ -4,7 +4,7 @@ import { EuiButton } from "@elastic/eui/";
 import { FactoryContext } from "../../components/contexts/ContextComponents";
 import TutorAuction from '../../build/contracts/TutorAuction.json';
 import BidComponent from "../../components/auction/BidComponent";
-import ProfileCardComponent from "../../components/auction/ProfileCardComponent";
+import ProfileCardComponent from "../../components/profile/ProfileCardComponent";
 import EditProfileComponent from "../../components/auction/EditProfileComponent";
 
 function AuctionMainPage(props) {

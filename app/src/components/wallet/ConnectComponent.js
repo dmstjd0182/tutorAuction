@@ -1,6 +1,7 @@
 import { injected } from "./Connectors";
 import { useWeb3React } from "@web3-react/core";
 import React, { useEffect, useState } from 'react';
+import { EuiText, EuiButton } from "@elastic/eui/";
 
 function ConnectorComponents(props) {
     const {active, account, activate, deactivate} = useWeb3React();
@@ -37,19 +38,21 @@ function ConnectorComponents(props) {
     }, []);
 
     return (
-        <div>
+        <>
+        <EuiText>
             <h1>TUTOR AUCTION!</h1>
             {isConnected && active? 
             <span>
-                <button onClick={disconnect}>Disconnect</button><br />
+                <EuiButton fill onClick={disconnect}>Disconnect</EuiButton><br />
                 내 주소: {account}
                 {props.children}
             </span> : 
             <span>
-                <button onClick={connect}>Connect to wallet</button><br />
+                <EuiButton fill onClick={connect}>Connect to wallet</EuiButton><br />
                 지갑을 연결하세요.
             </span>}
-        </div>
+        </EuiText>
+        </>
     )
 }
 

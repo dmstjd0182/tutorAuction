@@ -51,7 +51,7 @@ function ProfilePage(props) {
             setEducation(tutor.education);
             setCareer(tutor.career);
             setDescription(tutor.description);
-            setPay(tutor.pay);
+            setPay(tutor.pay / 10);
         }
     }
 

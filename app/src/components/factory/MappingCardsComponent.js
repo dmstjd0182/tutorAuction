@@ -1,6 +1,6 @@
 import { EuiHorizontalRule, EuiFlexItem, EuiFlexGrid } from "@elastic/eui/";
 import React from "react";
-import ProfileCardComponent from "../auction/ProfileCardComponent";
+import ProfileCardComponent from "../profile/ProfileCardComponent";
 
 function MappingCardsComponent(props){
     const array = props.array;
