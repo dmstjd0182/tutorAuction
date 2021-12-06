@@ -7,16 +7,17 @@ import {
     EuiForm 
     } from "@elastic/eui";
 import { useWeb3React } from "@web3-react/core";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FactoryContext } from "../../components/contexts/ContextComponents";
 
-function RegisterPage(props) {
+function ProfilePage(props) {
     const {account} = useWeb3React();
     const factory = useContext(FactoryContext);
     const [education, setEducation] = useState('');
     const [career, setCareer] = useState('');
     const [description, setDescription] = useState('');
     const [pay, setPay] = useState(0);
+    const [isRegistered, setIsRegistered] = useState(false);
     
     function eduChange(e) {
         setEducation(e.target.value);
@@ -36,13 +37,35 @@ function RegisterPage(props) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        await factory.methods.registerTutor(education, career, description, pay*10).send({from: account});
+        if(isRegistered){ //이미 가입 된 사람일 경우
+            await factory.methods.editProfile(education, career, description, pay*10).send({from: account});
+        } else {                //첫 가입일 경우
+            await factory.methods.registerTutor(education, career, description, pay*10).send({from: account});
+        }
     }
+
+    async function checkRegistered() {
+        const tutor = await factory.methods.tutors(account).call();
+        if(tutor.isRegistered) {        //프로필 수정일 경우
+            setIsRegistered(true);
+            setEducation(tutor.education);
+            setCareer(tutor.career);
+            setDescription(tutor.description);
+            setPay(tutor.pay);
+        }
+    }
+
+    useEffect(() => {
+        checkRegistered();
+    }, []);
 
     return(
         <>
         <br />
         <EuiButton href="/">메인 페이지로 이동</EuiButton>
+        {isRegistered &&
+        <EuiButton href={`/auction/${account}`}>프로필로 돌아가기</EuiButton>
+        }
         <EuiForm>
             <EuiFormRow
                 label="최종 학력"
@@ -86,7 +109,7 @@ function RegisterPage(props) {
             </EuiFormRow>
             <EuiFormRow>
                 <EuiButton onClick={handleSubmit} fill>
-                    가입하기
+                    저장
                 </EuiButton>
             </EuiFormRow>
         </EuiForm>
@@ -94,4 +117,4 @@ function RegisterPage(props) {
     );
 }
 
-export default RegisterPage;
+export default ProfilePage;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { FactoryContext } from "../contexts/ContextComponents";
-import RenderingCardsComponent from "./RendringCardsComponent";
+import MappingCardsComponent from "./MappingCardsComponent";
 
 function SelectTutorArrayComponent(props) {
     let option = props.option;
@@ -24,8 +24,8 @@ function SelectTutorArrayComponent(props) {
     return (
         <>
         {data.length != 0
-            ? <RenderingCardsComponent 
-                data={data}
+            ? <MappingCardsComponent 
+            array={data}
             />
             : <><br />There is no tutor.</>
         }

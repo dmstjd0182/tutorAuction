@@ -10,8 +10,7 @@ function BidComponent(props) {
 
 
     async function getHighestBid() {
-        let result = await auction.methods.highestBid().call();
-        setHighestBid(result);
+        setHighestBid(await auction.methods.highestBid().call());
     }
 
     function bidChange(e) {
@@ -34,7 +33,7 @@ function BidComponent(props) {
             placeholder="필수 입력"
             value={bid}
             onChange={bidChange}
-            min={highestBid}
+            min={+highestBid}
             step={0.001}
         />
         <EuiButton

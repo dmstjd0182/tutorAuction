@@ -4,7 +4,7 @@ import { EuiProvider, EuiHorizontalRule } from '@elastic/eui';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Web3ReactComponent from './components/web3_react/Web3ReactComponent';
 import FactoryMainPage from './pages/factory/FactoryMainPage';
-import RegisterPage from './pages/factory/RegisterPage';
+import ProfilePage from './pages/profile/ProfilePage';
 import AuctionMainPage from './pages/auction/AuctionMainPage';
 
 function App() {
@@ -16,8 +16,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FactoryMainPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/auction/:auctionAddress" element={<AuctionMainPage />} />
+          <Route path="/profile/:address" element={<ProfilePage />} />
+          <Route path="/auction/:address" element={<AuctionMainPage />} />
           {/* <Route path="/swap" element={<SwapPoolMainPage />} /> */}
         </Routes>
       </BrowserRouter>
