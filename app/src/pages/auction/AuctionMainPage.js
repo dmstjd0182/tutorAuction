@@ -7,6 +7,7 @@ import ProfileCardComponent from "../../components/profile/ProfileCardComponent"
 import { useParams } from "react-router";
 import TutorViewComponent from "../../components/auction/TutorViewComponent";
 import GeneralViewComponent from "../../components/auction/GeneralViewComponent";
+import EndAuctionComponent from "../../components/auction/EndAuctionComponent";
 
 function AuctionMainPage(props) {
     const { account, library: web3 } = useWeb3React();
@@ -57,6 +58,11 @@ function AuctionMainPage(props) {
                 inProgress={tutor.inProgress}
             />
             </>
+            }
+            {tutor.inProgress &&
+            <EndAuctionComponent 
+                auction={auction}
+            />
             }
             </>
         );
