@@ -1,6 +1,6 @@
 import React from "react";
-import { EuiButton } from "@elastic/eui/";
 import BidComponent from "../../components/auction/BidComponent";
+import RateComponent from "./RateComponent";
 
 function GeneralViewComponent(props) {
     const auction = props.auction;
@@ -16,7 +16,9 @@ function GeneralViewComponent(props) {
             inProgress={inProgress}
             />
         :
-            <EuiButton isDisabled='true'>경매 종료!</EuiButton>
+            <RateComponent
+            auction={auction}
+            />
         }
         </>
     );
