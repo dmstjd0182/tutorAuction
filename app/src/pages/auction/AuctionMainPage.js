@@ -65,6 +65,7 @@ function AuctionMainPage(props) {
             }
             {tutor.inProgress &&
             <EndAuctionComponent 
+                inProgress={tutor.inProgress}
                 auction={auction}
             />
             }

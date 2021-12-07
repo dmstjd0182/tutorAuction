@@ -28,12 +28,16 @@ function ProfileCardComponent(props) {
 
         let gap = endUnixTime - now;
 
+        if (gap < 0) {
+            setRemainedTime('0');
+        } else {
         const days = Math.floor(gap / (60 * 60 * 24)); // 일
         const hour = String(Math.floor((gap/ (60 * 60)) % 24 )).padStart(2, "0"); // 시
         const minutes = String(Math.floor((gap  / 60) % 60 )).padStart(2, "0"); // 분
         const second = String(Math.floor(gap % 60)).padStart(2, "0"); // 초
 
         setRemainedTime(`${days}d ${hour}h ${minutes}m ${second}s `);
+        }
     }
 
     async function getData() {

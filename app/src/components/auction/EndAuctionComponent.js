@@ -27,7 +27,7 @@ function EndAuctionComponent(props) {
         <>
         <EuiButton
             onClick={handleClick}
-            isDisabled={remainedTime < 0 ? false : true}
+            isDisabled={!props.inProgress && remainedTime < 0 ? false : true}
         >
             경매 종료!
         </EuiButton>
