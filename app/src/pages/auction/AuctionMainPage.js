@@ -1,13 +1,12 @@
 import { useWeb3React } from "@web3-react/core";
 import React, { useState, useEffect, useContext } from "react";
-import { EuiButton, EuiSpacer } from "@elastic/eui/";
+import { EuiButton } from "@elastic/eui/";
 import { FactoryContext } from "../../components/contexts/ContextComponents";
 import TutorAuction from '../../build/contracts/TutorAuction.json';
-import BidComponent from "../../components/auction/BidComponent";
 import ProfileCardComponent from "../../components/profile/ProfileCardComponent";
-import EditProfileComponent from "../../components/auction/EditProfileComponent";
-import StartAuctionComponent from "../../components/auction/StartAuctionComponent";
 import { useParams } from "react-router";
+import TutorViewComponent from "../../components/auction/TutorViewComponent";
+import GeneralViewComponent from "../../components/auction/GeneralViewComponent";
 
 function AuctionMainPage(props) {
     const { account, library: web3 } = useWeb3React();
@@ -44,21 +43,20 @@ function AuctionMainPage(props) {
                 tutor={tutor}
             />
             {address === account 
-            ?
+            ?   //본인 프로필일 때
             <>
-            <EditProfileComponent />
-            <EuiSpacer />
-            <StartAuctionComponent />
+            <TutorViewComponent 
+                auction={auction}
+                inProgress={tutor.inProgress}
+            />
             </>
             :   //본인 프로필이 아닐 때
-                tutor.inProgress    
-                ?   //경매 진행 중일 때
-                    <BidComponent 
-                    auction={auction}
-                    inProgress={tutor.inProgress}
-                    />
-                :
-                    <EuiButton isDisabled='true'>경매 종료!</EuiButton>
+            <>
+            <GeneralViewComponent 
+                auction={auction}
+                inProgress={tutor.inProgress}
+            />
+            </>
             }
             </>
         );
