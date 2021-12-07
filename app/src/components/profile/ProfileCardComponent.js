@@ -53,8 +53,8 @@ function ProfileCardComponent(props) {
                 <div>
                 <img
                     src={imgLinks[+tutor % imgLinks.length]}
-                    height='300'
-                    width='120'
+                    height='400'
+                    width='300'
                 />
                 </div>
             }
