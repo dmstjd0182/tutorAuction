@@ -6,10 +6,12 @@ function BidComponent(props) {
     const auction = props.auction;
     const {account, library: web3} = useWeb3React();
     const [highestBid, setHighestBid] = useState(0);
-    const [bid, setBid] = useState(0);
+    const [highestBidder, setHighestBidder] = useState('No Bidder!');
+    const [bid, setBid] = useState(null);
 
     async function getHighestBid() {
         setHighestBid(await auction.methods.highestBid().call());
+        setHighestBidder(await auction.methods.highestBidder().call());
     }
 
     function bidChange(e) {
@@ -29,6 +31,7 @@ function BidComponent(props) {
         <EuiSpacer />
         <EuiText>
             <h3>현재 최고 입찰가: {web3.utils.fromWei(highestBid.toString(), 'ether')} ETH </h3>
+            최고 입찰자: {highestBidder}
         </EuiText>
         <EuiFieldNumber
             placeholder="필수 입력"
