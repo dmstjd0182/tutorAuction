@@ -1,3 +1,4 @@
+import { EuiSpacer } from "@elastic/eui/";
 import React from "react";
 import BidComponent from "../../components/auction/BidComponent";
 import RateComponent from "./RateComponent";
@@ -16,9 +17,12 @@ function GeneralViewComponent(props) {
             inProgress={inProgress}
             />
         :
+            <>
+            <EuiSpacer />
             <RateComponent
             auction={auction}
             />
+            </>
         }
         </>
     );

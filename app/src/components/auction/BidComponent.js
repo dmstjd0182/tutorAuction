@@ -11,7 +11,9 @@ function BidComponent(props) {
 
     async function getHighestBid() {
         setHighestBid(await auction.methods.highestBid().call());
-        setHighestBidder(await auction.methods.highestBidder().call());
+        if(highestBid !== 0) {
+            setHighestBidder(await auction.methods.highestBidder().call());
+        }
     }
 
     function bidChange(e) {

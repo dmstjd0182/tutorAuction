@@ -13,7 +13,7 @@ function RateComponent(props) {
     }
 
     async function handleClick() {
-        await auction.methods.setRate(_rate).call();
+        await auction.methods.setRate(_rate).send({from: account});
     }
 
     async function getHighestBidder() {
