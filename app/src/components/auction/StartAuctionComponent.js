@@ -40,6 +40,7 @@ function StartAuctionComponent(props) {
                     value={endPrice}
                     onChange={endPriceChange}
                     min={0.01}
+                    max={1}
                     step={0.01}
                 />
             </EuiFormRow>
@@ -52,6 +53,7 @@ function StartAuctionComponent(props) {
                     value={endTime}
                     onChange={endTimeChange}
                     min={7}
+                    max={84}
                     step={1}
                 />
             </EuiFormRow>
