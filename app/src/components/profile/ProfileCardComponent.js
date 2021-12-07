@@ -58,6 +58,7 @@ function ProfileCardComponent(props) {
                 />
                 </div>
             }
+            textAlign='left'
             titleSize='s'
             title={tutor}
             description={description}
@@ -76,7 +77,7 @@ function ProfileCardComponent(props) {
             <EuiSpacer />
             <EuiText size="m">
                 <ul>
-                    <li>{inProgress ? '경매 진행중!' : '경매 불가'}</li>
+                    <li>{inProgress ? '경매 진행중!' : '경매 종료'}</li>
                     <li>평점: {averageRate} / 100</li>
                     <li>시급: {(pay / 10 * 10000).toLocaleString()}원</li>
                     <li>학력: {education}</li>

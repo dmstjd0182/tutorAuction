@@ -23,16 +23,19 @@ function TutorViewComponent(props) {
         <EditProfileComponent />
         <EuiSpacer />
         {inProgress
-        ?
+        ?   //경매 진행 중
         <AbortAuctionComponent 
             auction={auction}
         />
-        :
+        :   //경매 종료 상황
         <>
-        <StartAuctionComponent 
-            totalBid={totalBid}
-        />
-        {totalBid !== '0' &&
+        
+        {totalBid === '0' 
+        ?   //경매 리셋 후
+            <StartAuctionComponent 
+                totalBid={totalBid}
+            />
+        :   //경매 리셋 전
             <ClaimRewardComponent 
                 auction={auction}
             />
