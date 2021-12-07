@@ -56,7 +56,11 @@ function StartAuctionComponent(props) {
                 />
             </EuiFormRow>
             <EuiFormRow>
-                <EuiButton onClick={handleSubmit} fill>
+                <EuiButton 
+                onClick={handleSubmit} 
+                isDisabled={props.totalBid === '0' ? false : true}
+                fill
+                >
                     경매 시작!
                 </EuiButton>
             </EuiFormRow>
