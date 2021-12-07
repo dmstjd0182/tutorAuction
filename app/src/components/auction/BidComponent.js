@@ -1,4 +1,4 @@
-import { EuiButton, EuiFieldNumber, EuiSpacer } from "@elastic/eui/";
+import { EuiButton, EuiFieldNumber, EuiSpacer, EuiText } from "@elastic/eui/";
 import { useWeb3React } from "@web3-react/core";
 import React, { useEffect, useState } from "react";
 
@@ -27,7 +27,9 @@ function BidComponent(props) {
     return(
         <>
         <EuiSpacer />
-        현재 최고 입찰가: {web3.utils.fromWei(highestBid.toString(), 'ether')} ETH
+        <EuiText>
+            <h3>현재 최고 입찰가: {web3.utils.fromWei(highestBid.toString(), 'ether')} ETH </h3>
+        </EuiText>
         <EuiFieldNumber
             placeholder="필수 입력"
             value={bid}

@@ -1,8 +1,14 @@
-import React from "react";
-import { EuiCard, EuiText } from "@elastic/eui/";
+import React, { useState, useEffect } from "react";
+import { EuiCard, EuiText, EuiSpacer } from "@elastic/eui/";
+import { useWeb3React } from "@web3-react/core";
+import TutorAuction from "../../build/contracts/TutorAuction.json";
 
 function ProfileCardComponent(props) {
-    const { tutor, averageRate, pay, education, career, description, inProgress} = props.tutor;
+    const {library: web3} = useWeb3React();
+    const { auction:auctionAddress, tutor, averageRate, pay, education, career, description, inProgress} = props.tutor;
+    const auction = new web3.eth.Contract(TutorAuction.abi, auctionAddress);
+    const [highestBid, setHighestBid] = useState('');
+    const [remainedTime, setRemainedTime] = useState('');
 
     const imgLinks = [
         "https://lh3.googleusercontent.com/inXz00iNE9qtE3HzI5QNSZZTnatx5YBp1ERGE_aIU696o1q-qCnrH_PQ_nPYu9LsJeoCiq4UXbarOR1zLjhzITpQcJrUeBX9ZQn8MA=w600",
@@ -14,6 +20,33 @@ function ProfileCardComponent(props) {
         "https://lh3.googleusercontent.com/0Nyx04azp_PYHKlURDlB_rGxOWdgtmZ_q5ou5vJqavQBHf5y_6kAs8aw3G9NRVOz1LNUmYJEGAnX7a20BhyKQXqQXL3l9uHpva1FVw=w600"
     ];
 
+    async function getRemainedTime() {
+        let startedTime = await auction.methods.startedTime().call();
+        let endTime = await auction.methods.endTime().call();
+        let endUnixTime = +startedTime + +endTime;
+        let now = Date.now() / 1000;    //밀리초 -> 초
+
+        let gap = endUnixTime - now;
+
+        const days = Math.floor(gap / (60 * 60 * 24)); // 일
+        const hour = String(Math.floor((gap/ (60 * 60)) % 24 )).padStart(2, "0"); // 시
+        const minutes = String(Math.floor((gap  / 60) % 60 )).padStart(2, "0"); // 분
+        const second = String(Math.floor(gap % 60)).padStart(2, "0"); // 초
+
+        setRemainedTime(`${days}d ${hour}h ${minutes}m ${second}s `);
+    }
+
+    async function getData() {
+        setHighestBid(await auction.methods.highestBid().call());
+        setInterval(getRemainedTime, 1000);
+    }
+
+    useEffect(() => {
+        if(inProgress){
+        getData();
+        }
+    }, []);
+
     return(
         <EuiCard
             image={
@@ -21,7 +54,7 @@ function ProfileCardComponent(props) {
                 <img
                     src={imgLinks[+tutor % imgLinks.length]}
                     height='300'
-                    width='100'
+                    width='120'
                 />
                 </div>
             }
@@ -32,6 +65,15 @@ function ProfileCardComponent(props) {
             isDisabled={inProgress ? false : true}
             paddingSize='l'
         >
+            {inProgress &&
+            <EuiText size="l">
+                <h3>
+                <p> 남은 시간: {remainedTime} </p>
+                최고 입찰가: {web3.utils.fromWei(highestBid, 'ether')} ETH 
+                </h3>
+            </EuiText>
+            }
+            <EuiSpacer />
             <EuiText size="m">
                 <ul>
                     <li>{inProgress ? '경매 진행중!' : '경매 불가'}</li>
